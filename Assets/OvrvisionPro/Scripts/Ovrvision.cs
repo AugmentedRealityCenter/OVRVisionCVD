@@ -297,62 +297,14 @@ public class Ovrvision : MonoBehaviour
 		if (viewShader == 0)
 		{
 			//Normal Shader
-			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Ovrvision/ovTexture");
-			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Ovrvision/ovTexture");
+			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Shaders/cvdNoChange");
+			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Shaders/cvdNoChange");
 		}
-		else if (viewShader == 1)
+		else // if (viewShader == 1)
 		{
-			//Chroma-key Shader
-			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Ovrvision/ovChromaticMask");
-			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Ovrvision/ovChromaticMask");
-
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxh", chroma_hue.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_minh", chroma_hue.y);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxs", chroma_saturation.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_mins", chroma_saturation.y);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxv", chroma_brightness.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_minv", chroma_brightness.y);
-
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxh", chroma_hue.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_minh", chroma_hue.y);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxs", chroma_saturation.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_mins", chroma_saturation.y);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxv", chroma_brightness.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_minv", chroma_brightness.y);
-		}
-		else if (viewShader == 2)
-		{
-			//Hand Mask Shader
-			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Ovrvision/ovHandMaskRev");
-			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Ovrvision/ovHandMaskRev");
-
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxh", chroma_hue.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_minh", chroma_hue.y);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxs", chroma_saturation.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_mins", chroma_saturation.y);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxv", chroma_brightness.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_minv", chroma_brightness.y);
-
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxh", chroma_hue.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_minh", chroma_hue.y);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxs", chroma_saturation.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_mins", chroma_saturation.y);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxv", chroma_brightness.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_minv", chroma_brightness.y);
-
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxY", chroma_y.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_minY", chroma_y.y);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxCB", chroma_cb.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_minCB", chroma_cb.y);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_maxCR", chroma_cr.x);
-			CameraPlaneLeft.GetComponent<Renderer>().material.SetFloat("_Color_minCR", chroma_cr.y);
-
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxY", chroma_y.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_minY", chroma_y.y);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxCB", chroma_cb.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_minCB", chroma_cb.y);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_maxCR", chroma_cr.x);
-			CameraPlaneRight.GetComponent<Renderer>().material.SetFloat("_Color_minCR", chroma_cr.y);
+			//Brettel Dichromat Shader
+			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Shaders/cvdBrettel");
+			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Shaders/cvdBrettel");
 		}
 	}
 }
