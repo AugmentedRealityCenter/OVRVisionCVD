@@ -68,7 +68,7 @@ public class OvrvisionEditor : Editor {
 
 		EditorGUILayout.Space();
 
-		string[] planeshader = { "Normal Shader", "Brettel Dichromat Shader" };
+		string[] planeshader = { "Normal Shader", "Brettel Deutan Shader" };
 		obj.camViewShader = EditorGUILayout.Popup("Camera Overlay", obj.camViewShader, planeshader);
 
 		//changed param
