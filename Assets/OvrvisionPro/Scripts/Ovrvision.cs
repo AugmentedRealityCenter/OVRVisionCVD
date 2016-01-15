@@ -303,8 +303,8 @@ public class Ovrvision : MonoBehaviour
 		else // if (viewShader == 1)
 		{
 			//Brettel Dichromat Shader
-			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdBrettelDeutan");
-			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdBrettelDeutan");
+			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdBrettel");
+			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdBrettel");
 		}
 	}
 }
