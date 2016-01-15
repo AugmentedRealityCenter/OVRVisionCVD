@@ -1,6 +1,7 @@
 ﻿Shader "Custom/cvdBrettel" {
 Properties {
 	_MainTex ("Base (RGB)", 2D) = "white" {}
+	_CVDType ("CVD Type", Int) = 2
 }
 
 SubShader {
@@ -16,6 +17,7 @@ CGPROGRAM
 #include "UnityCG.cginc"
 
 uniform sampler2D _MainTex;
+int _CVDType;
 
 fixed4 frag (v2f_img i) : SV_Target
 {
@@ -45,16 +47,56 @@ fixed4 frag (v2f_img i) : SV_Target
 	float4 simulation_applied_color = mul(cvp_applied_color,transpose(rgb2lms)); 
 
 	//This is for Deutan. See Brettel et al for other versions
-	float tmp = simulation_applied_color.b / simulation_applied_color.r;
+	float Q_ratio;
+	float E_ratio;
 
-	float3 A = (tmp < anchor_e.z/anchor_e.x) ? anchor_575 : anchor_475;
+	switch(_CVDType){
+	case 0: //Deutan
+	default:
+		Q_ratio = simulation_applied_color.b / simulation_applied_color.r;
+		E_ratio = anchor_e.z/anchor_e.x;
+		break;
+	case 1: //Protan
+		Q_ratio = simulation_applied_color.b / simulation_applied_color.g;
+		E_ratio = anchor_e.z/anchor_e.y;
+		break;
+	case 2://Tritan
+		Q_ratio = simulation_applied_color.g / simulation_applied_color.r;
+		E_ratio = anchor_e.y/anchor_e.x;
+		break;
+	}
+
+	float3 A;
+	switch(_CVDType){
+	case 0:
+	case 1:
+	default:
+		A = (Q_ratio < E_ratio) ? anchor_575 : anchor_475;
+		break;
+	case 2:
+		A = (Q_ratio < E_ratio) ? anchor_660 : anchor_485;
+		break;
+	}
 
 	float a = anchor_e.y*A.z - anchor_e.z*A.y; //MeSa - SeMa
 	float b = anchor_e.z*A.x - anchor_e.x*A.z; //SeLa - LeSa
 	float c = anchor_e.x*A.y - anchor_e.y*A.x; //LeMa - MeLa
 
-	//Mq = -(aLq + cSq)/b
-    simulation_applied_color.g = -(a * simulation_applied_color.r + c * simulation_applied_color.b) / b;
+	switch(_CVDType){
+	case 0: //Deutan
+	default:
+		//Mq = -(aLq + cSq)/b
+		simulation_applied_color.g = -(a * simulation_applied_color.r + c * simulation_applied_color.b) / b;
+		break;
+	case 1: //Protan
+		//Lq = -(bMq + cSq)/a
+		simulation_applied_color.r = -(b * simulation_applied_color.g + c * simulation_applied_color.b) / a;
+		break;
+	case 2://Tritan
+		//Sq = -(aLq + bMq)/c
+		simulation_applied_color.b = -(a * simulation_applied_color.r + b * simulation_applied_color.g) / c;
+		break;
+	}
 
 	//Calculated in Excel using MINVERSE, from the rgb2lms
     float4x4 lms2rgb = float4x4( 1.0159, -0.9264,  0.0683, 0.0,
