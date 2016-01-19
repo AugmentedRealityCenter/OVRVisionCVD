@@ -300,11 +300,17 @@ public class Ovrvision : MonoBehaviour
 			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdNoChange");
 			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdNoChange");
 		}
-		else // if (viewShader == 1)
+		else if (viewShader == 1)
 		{
 			//Brettel Dichromat Shader
 			CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdBrettel");
 			CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdBrettel");
 		}
-	}
+        else
+        {
+            //Brettel Dichromat Shader, GIMP anchors
+            CameraPlaneLeft.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdBrettelGimp");
+            CameraPlaneRight.GetComponent<Renderer>().material.shader = Shader.Find("Custom/cvdBrettelGimp");
+        }
+    }
 }
