@@ -1,7 +1,7 @@
 ﻿Shader "Custom/cvdBrettelGimp" {
 Properties {
 	_MainTex ("Base (RGB)", 2D) = "white" {}
-	_CVDType ("CVD Type", Int) = 2
+	_CVDType ("CVD Type", Int) = 0
 }
 
 SubShader {
