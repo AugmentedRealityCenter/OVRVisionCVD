@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Threading;
-using UnityEngine.VR;
+using System.IO;
 
 /// <summary>
 /// This class provides main interface to the Ovrvision
@@ -17,10 +17,14 @@ public class Ovrvision : MonoBehaviour
 	private GameObject CameraRight;
 	private GameObject CameraPlaneLeft;
 	private GameObject CameraPlaneRight;
-	//Camera texture
-	private Texture2D CameraTexLeft = null;
+    private TextMesh PixelColorText;
+    private GameObject Snapshot;
+
+    //Camera texture
+    private Texture2D CameraTexLeft = null;
 	private Texture2D CameraTexRight = null;
 	private Vector3 CameraRightGap;
+    private Color CenterPixelColor;
 
 	//public propaty
 	public int cameraMode = COvrvisionUnity.OV_CAMVR_FULL;
@@ -90,8 +94,10 @@ public class Ovrvision : MonoBehaviour
 		CameraRight = this.transform.FindChild("RightCamera").gameObject;
 		CameraPlaneLeft = CameraLeft.transform.FindChild("LeftImagePlane").gameObject;
 		CameraPlaneRight = CameraRight.transform.FindChild("RightImagePlane").gameObject;
-
-		CameraLeft.transform.localPosition = Vector3.zero;
+        PixelColorText = (TextMesh)CameraPlaneLeft.transform.FindChild("PixelColorText").gameObject.GetComponent(typeof(TextMesh));
+        Snapshot = CameraPlaneLeft.transform.FindChild("Snapshot").gameObject;
+        
+        CameraLeft.transform.localPosition = Vector3.zero;
 		CameraRight.transform.localPosition = Vector3.zero;
 		CameraLeft.transform.localRotation = Quaternion.identity;
 		CameraRight.transform.localRotation = Quaternion.identity;
@@ -166,6 +172,8 @@ public class Ovrvision : MonoBehaviour
 		return m;
 	}
 
+    private bool ssDirty = false;
+
 	// Update is called once per frame
 	void Update ()
 	{
@@ -202,6 +210,43 @@ public class Ovrvision : MonoBehaviour
 		OvrPro.useOvrvisionTrack = useOvrvisionTrack;
 
 		OvrPro.UpdateImage(CameraTexLeft.GetNativeTexturePtr(), CameraTexRight.GetNativeTexturePtr());
+
+        if (Input.GetKey("c"))
+        {
+            Application.CaptureScreenshot("Assets/Resources/UnityScreenshot.png");
+            ssDirty = true;
+        }
+
+        if (ssDirty && File.Exists("Assets/Resources/UnityScreenshot.png"))
+        {
+            byte[] file = File.ReadAllBytes("Assets/Resources/UnityScreenshot.png");
+            Texture2D texture = new Texture2D(4, 4);
+            texture.LoadImage(file);
+
+            Snapshot.GetComponent<Renderer>().materials[0].SetTexture("_MainTex", texture);
+            ssDirty = false;
+
+            int count = 0;
+            int windowSize = 4;
+            int r = 0;
+            int g = 0;
+            int b = 0;
+            for(int y = texture.height/2 - windowSize/2; y < texture.height/2 + windowSize/2; y++)
+            {
+                for(int x = texture.width / 2 - windowSize / 2; x < texture.width / 2 + windowSize / 2; x++)
+                {
+                    Color c = texture.GetPixel(x, y);
+                    r += (int)(256 * c.r);
+                    g += (int)(256 * c.g);
+                    b += (int)(256 * c.b);
+                    count += 1;
+                }
+            }
+            r /= count;
+            g /= count;
+            b /= count;
+            PixelColorText.text = "(" + r + ", " + g + ", " + b + ")";
+        }
 
 		if (useOvrvisionAR) OvrvisionARRender();
 		if (useOvrvisionTrack) OvrvisionTrackRender();
