@@ -94,9 +94,10 @@ public class Ovrvision : MonoBehaviour
 		CameraRight = this.transform.FindChild("RightCamera").gameObject;
 		CameraPlaneLeft = CameraLeft.transform.FindChild("LeftImagePlane").gameObject;
 		CameraPlaneRight = CameraRight.transform.FindChild("RightImagePlane").gameObject;
-        PixelColorText = (TextMesh)CameraPlaneLeft.transform.FindChild("PixelColorText").gameObject.GetComponent(typeof(TextMesh));
+
         Snapshot = CameraPlaneLeft.transform.FindChild("Snapshot").gameObject;
-        
+        PixelColorText = (TextMesh)Snapshot.transform.FindChild("PixelColorText").gameObject.GetComponent(typeof(TextMesh));
+
         CameraLeft.transform.localPosition = Vector3.zero;
 		CameraRight.transform.localPosition = Vector3.zero;
 		CameraLeft.transform.localRotation = Quaternion.identity;
