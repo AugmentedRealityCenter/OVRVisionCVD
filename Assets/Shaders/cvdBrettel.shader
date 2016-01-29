@@ -26,14 +26,12 @@ fixed4 frag (v2f_img i) : SV_Target
 	float4 cvp_applied_color = pow(original,2.2f);
 
 	//By measurement of DK2, using cone fundamentals
-	float4x4 rgb2lms = float4x4(1.3180, 3.1228, 0.3100, 0.0,
-							    0.3660, 3.4300, 0.5072, 0.0,
-								0.0009, 0.0740, 2.2679, 0.0,
+	float4x4 rgb2lms = float4x4(0.10742840, 0.25736297, 0.04052394, 0.0,
+							    0.02921477, 0.28452060, 0.06818306, 0.0,
+							    0.00002596, 0.00410198, 0.20863832, 0.0,
 								0.0,    0.0,    0.0,    1.0);
 	
-	float3 anchor_e = float3(rgb2lms[0][0]+rgb2lms[0][1]+rgb2lms[0][2],
-							 rgb2lms[1][0]+rgb2lms[1][1]+rgb2lms[1][2],
-							 rgb2lms[2][0]+rgb2lms[2][1]+rgb2lms[2][2]); //LMS values for equal energy illuminant, AKA white
+	float3 anchor_e = float3(0.294595733, 0.251084745, 0.135999523); //LMS values for equal energy illuminant. Note: NOT white! E is actually reddish, similar to 5455K
 	
 	//LMS values for other anchor colors. Wavelengths 475 and 575 are used for protan/deutan, 485 and 660 for tritan
 	//Values are taken from the Stockman and Sharpe 2-deg cone fundamentals from http://www.cvrl.org/cones.htm
@@ -99,9 +97,9 @@ fixed4 frag (v2f_img i) : SV_Target
 	}
 
 	//Calculated in Excel using MINVERSE, from the rgb2lms
-    float4x4 lms2rgb = float4x4( 1.0159, -0.9264,  0.0683, 0.0,
-					            -0.1089,  0.3922, -0.0728, 0.0,
-								 0.0031, -0.0124,  0.4433, 0.0,
+    float4x4 lms2rgb = float4x4(12.35148362, -11.19066632,   1.258076675, 0.0,
+								-1.273892622,  4.685491506, -1.283790923, 0.0,
+								 0.023508879, -0.090727739,  4.818067155, 0.0,
 								 0.0,     0.0,     0.0,    1.0);
 
 	simulation_applied_color = pow(mul(simulation_applied_color,transpose(lms2rgb)),1.0f/2.2f);
