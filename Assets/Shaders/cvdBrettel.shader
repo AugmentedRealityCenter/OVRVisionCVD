@@ -21,9 +21,8 @@ int _CVDType;
 
 fixed4 frag (v2f_img i) : SV_Target
 {
-	//This is pretty accurate gamma for DK2
-	float4 original = tex2D(_MainTex, i.uv);
-	float4 cvp_applied_color = pow(original,2.2f);
+	float4 original_color = tex2D(_MainTex, i.uv);
+	float4 gamma_uncompressed_color = pow(original_color,2.2f); //This is pretty accurate gamma for DK2
 
 	//By measurement of DK2, using cone fundamentals
 	float4x4 rgb2lms = float4x4(0.10742840, 0.25736297, 0.04052394, 0.0,
@@ -42,7 +41,7 @@ fixed4 frag (v2f_img i) : SV_Target
 	float3 anchor_575 = float3(0.9923, 0.7403, 0.0002);
 	float3 anchor_660 = float3(0.0930, 0.0073, 0.0000);
 
-	float4 simulation_applied_color = mul(cvp_applied_color,transpose(rgb2lms)); 
+	float4 simulation_applied_color = mul(gamma_uncompressed_color,transpose(rgb2lms)); 
 
 	//This is for Deutan. See Brettel et al for other versions
 	float Q_ratio;
@@ -104,7 +103,7 @@ fixed4 frag (v2f_img i) : SV_Target
 
 	simulation_applied_color = pow(mul(simulation_applied_color,transpose(lms2rgb)),1.0f/2.2f);
 
-	simulation_applied_color.a = original.a;
+	simulation_applied_color.a = original_color.a;
 	return simulation_applied_color;
 }
 ENDCG
