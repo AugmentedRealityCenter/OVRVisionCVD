@@ -27,8 +27,11 @@ fixed4 frag (v2f_img i) : SV_Target
 
 	//By measurement of DK2, using cone fundamentals
 	float4x4 rgb2lms;
-	bool gimpOriginal = false;
-	if(gimpOriginal){
+	if(true){
+	 rgb2lms = float4x4( 0.05059983, 0.08585369, 0.00952420, 0.0,
+						 0.01893033, 0.08925308, 0.01370054, 0.0,
+						 0.00292202, 0.00975732, 0.07145979, 0.0,
+						 0.0, 0.0, 0.0, 1.0);
 	} else {
 	 rgb2lms = float4x4(0.10742840, 0.25736297, 0.04052394, 0.0,
 							    0.02921477, 0.28452060, 0.06818306, 0.0,
@@ -36,17 +39,40 @@ fixed4 frag (v2f_img i) : SV_Target
 								0.0,    0.0,    0.0,    1.0);
 	}
 	
-	float3 anchor_e = float3(rgb2lms[0][0]+rgb2lms[0][1]+rgb2lms[0][2],
+	float3 anchor_e;
+	switch(0){
+	case 0: //Original from GIMP, use W instead of E
+	default:
+	  anchor_e = float3(rgb2lms[0][0]+rgb2lms[0][1]+rgb2lms[0][2],
 							 rgb2lms[1][0]+rgb2lms[1][1]+rgb2lms[1][2],
 							 rgb2lms[2][0]+rgb2lms[2][1]+rgb2lms[2][2]); //LMS values for equal energy illuminant, AKA white
+	  break;
+	case 1: //Use E, for DK2 rgb2lms matrix
+	  anchor_e = float3(0.294595733, 0.251084745, 0.135999523); //LMS values for equal energy illuminant. Note: NOT white! E is actually reddish, similar to 5455K
+	  break;
+    case 2: //Use E, for GIMP rgb2lms matrix
+	  //TODO: How to do this?
+	  break;
+	}
 	
+	float3 anchor_475;
+	float3 anchor_485;
+	float3 anchor_575;
+	float3 anchor_660;
+	if(true){
 	//LMS values for other anchor colors. Wavelengths 475 and 575 are used for protan/deutan, 485 and 660 for tritan
-	//Values taken from GIMP, and are also used widely online. Seem to differ from
-	// the Stockman and Sharpe 2-deg cone fundamentals from http://www.cvrl.org/cones.htm
-	float3 anchor_475 = float3(0.08008, 0.1579,   0.5897);
-	float3 anchor_485 = float3(0.1284,  0.2237,   0.3636);
-	float3 anchor_575 = float3(0.9856,  0.7325,   0.001079);
-	float3 anchor_660 = float3(0.0914,  0.007009, 0.0);
+	//Values taken from GIMP
+	  anchor_475 = float3(0.08008, 0.1579,   0.5897);
+	  anchor_485 = float3(0.1284,  0.2237,   0.3636);
+	  anchor_575 = float3(0.9856,  0.7325,   0.001079);
+	  anchor_660 = float3(0.0914,  0.007009, 0.0);
+	} else {
+	//From Stockman and Share 2-deg cone fundamentals http://www.cvrl.org/cones.htm
+	  anchor_475 = float3(0.1188, 0.2054, 0.5164);
+	  anchor_485 = float3(0.1640, 0.2681, 0.2903);
+	  anchor_575 = float3(0.9923, 0.7403, 0.0002);
+	  anchor_660 = float3(0.0930, 0.0073, 0.0000);
+	}
 
 	float4 simulation_applied_color = mul(cvp_applied_color,transpose(rgb2lms)); 
 
@@ -104,7 +130,11 @@ fixed4 frag (v2f_img i) : SV_Target
 
 	//Calculated in Excel using MINVERSE, from the rgb2lms
     float4x4 lms2rgb;
-	if(gimpOriginal){
+	if(true){
+	    lms2rgb = float4x4(30.830854, -29.832659, 1.610474, 0.0,
+						   -6.481468, 17.715578, -2.532642, 0.0,
+						   -0.375690, -1.199062, 14.273846, 0.0,
+						   0.0, 0.0, 0.0, 1.0);
 	}else{
 		lms2rgb = float4x4(12.35148362, -11.19066632,   1.258076675, 0.0,
 								-1.273892622,  4.685491506, -1.283790923, 0.0,
